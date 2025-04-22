@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>QR Code Test</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    #qrcode {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Scan QR Code</h1>
+  <div id="qrcode"></div>
+  <script>
+    const socket = io();
+
+    socket.on('connect', () => {
+      console.log("📡 Socket connected!");
+    });
+
+    socket.on('qr', (qr) => {
+      console.log("📨 Received QR:", qr);
+      document.getElementById('qrcode').innerHTML = "";
+      new QRCode(document.getElementById("qrcode"), {
+        text: qr,
+        width: 300,
+        height: 300
+      });
+    });
+  </script>
+</body>
+</html>

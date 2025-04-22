@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WhatsApp QR</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding-top: 50px;
+    }
+    #loading {
+      font-size: 20px;
+      color: #555;
+    }
+    #qrcode {
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>🚀 Scan WhatsApp QR Code</h1>
+  <div id="loading">⏳ جاري توليد الكود...</div>
+  <canvas id="qrcode"></canvas>
+
+  <script>
+    const socket = io();
+
+    socket.on('connect', () => {
+      console.log('📡 Socket connected!');
+    });
+
+    socket.on('qr', (qr) => {
+      const canvas = document.getElementById('qrcode');
+      const loading = document.getElementById('loading');
+
+      QRCode.toCanvas(canvas, qr, { width: 300 }, function (error) {
+        if (error) {
+          console.error(error);
+          loading.textContent = '❌ حصل خطأ في توليد الكود';
+        } else {
+          loading.style.display = 'none';
+          canvas.style.display = 'block';
+          console.log('✅ QR Code rendered!');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
